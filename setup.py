@@ -19,6 +19,7 @@ setup(
     ],
     python_requires=">=3.9",
     install_requires=["gensound==0.5.3", "numpy==1.24.1"],
+    package_dir={'': 'src'},
     packages=find_packages(where="src/mozart", include="*"),
     include_package_data=True,
 )
