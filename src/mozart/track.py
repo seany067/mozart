@@ -66,7 +66,7 @@ class Track:
             clip_signal = clip_signal | clip.get_internal()[:float(timing.duration - cur_time)]
         return clip_signal
 
-    def play(self) -> Signal:
+    def getSignal(self) -> Signal:
         signal = Signal() | EMPTY_SOUND
         timing_map: Dict[Timing, AudioClip] = {}
         for clip, timings in self.audio_track.items():

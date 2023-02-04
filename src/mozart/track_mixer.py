@@ -21,5 +21,5 @@ class TrackMixer:
     def play(self) -> Signal:
         signal = Signal()
         for track in self._tracks:
-            signal += track.play()
+            signal += track.getSignal()
         signal.play()
