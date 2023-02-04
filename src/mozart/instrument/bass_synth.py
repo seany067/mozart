@@ -9,10 +9,24 @@ from gensound.transforms import FadeOut, FadeIn
 class BassSynth(BasicSynth):
     def instrument_builder(self, note: Note):
         return (
-            Raw(
-                pitch_shift_single(
-                    Sine(str(note), note.duration),
-                    -4,
+            (
+                Raw(
+                    pitch_shift_single(
+                        Sine(str(note), note.duration),
+                        -4,
+                    )
+                )
+                + Raw(
+                    pitch_shift_single(
+                        Sine(str(note), note.duration),
+                        -3.75,
+                    )
+                )
+                + Raw(
+                    pitch_shift_single(
+                        Triangle(str(note), note.duration),
+                        -4,
+                    )
                 )
             )
             * FadeOut(0.025e3)
