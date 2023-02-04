@@ -9,7 +9,7 @@ from gensound import test_wav
 
 def test_session():
     track = Track()
-    track.addClip(
+    track.add_clip(
         SampleClip(test_wav),
         start_time=0.0,
         duration=0.2e3,
