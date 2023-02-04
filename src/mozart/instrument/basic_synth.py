@@ -1,4 +1,6 @@
-from gensound import Gain, Sine, Triangle, Sawtooth, Square, Silence, Raw
+from abc import abstractmethod
+
+from gensound import Gain, Sine, Triangle, Sawtooth, Square, Silence, Raw, Shift
 from typing import Union
 
 from . import Instrument
@@ -10,6 +12,10 @@ class BasicSynth(Instrument):
         super().__init__(midi, sample_rate)
         self.__build_internal_representation()
 
+    @abstractmethod
+    def instrument_builder(self, note: Note):
+        pass
+
     def play(self):
         self.__internal.play(sample_rate=self.sample_rate)
 
@@ -19,13 +25,13 @@ class BasicSynth(Instrument):
 
         for item in self.midi:
             if isinstance(item, Note):
-                self.__internal[current_timestamp:current_timestamp + item.duration] += self.instrument_builder(item)
+                self.__internal[current_timestamp + item.shift:] += self.instrument_builder(item)
             elif isinstance(item, Chord):
                 chord = self.instrument_builder(item.root_note)
                 for note in item.notes[1:]:
                     chord += self.instrument_builder(note)
 
-                self.__internal[current_timestamp:current_timestamp + item.duration] += chord
+                self.__internal[current_timestamp + item.shift:] += chord
                 self.__internal = self.__internal.mixdown(sample_rate=self.sample_rate)
                 self.__internal = Raw(self.__internal)
 

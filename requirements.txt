@@ -8,7 +8,7 @@ future==0.18.3
 gensound==0.5.3
 iniconfig==2.0.0
 mypy-extensions==0.4.3
-numpy==1.24.1
+numpy==1.23.5
 packaging==23.0
 pathspec==0.11.0
 platformdirs==2.6.2
