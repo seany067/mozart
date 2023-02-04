@@ -3,7 +3,6 @@ from gensound import WAV
 
 
 class SampleClip(AudioClip):
-    __internal: WAV
     sample_rate: int
 
     def __init__(self, filename: str, sample_rate: int = 44100):
