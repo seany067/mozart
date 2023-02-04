@@ -1,4 +1,5 @@
 from .audio_clip import AudioClip
+from .wav import WAVWrapper
 from gensound import WAV, Signal
 
 
@@ -16,4 +17,4 @@ class SampleClip(AudioClip):
         self.__internal.play(sample_rate=self.sample_rate)
 
     def __build_internal_representation(self, filename: str):
-        self.__internal = WAV(filename)
+        self.__internal = WAVWrapper(filename)

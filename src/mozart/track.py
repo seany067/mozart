@@ -1,8 +1,13 @@
 from .audio_clip import AudioClip
 from .exceptions import AudioClipOverlapException
+from .wav import WAVWrapper
+from pathlib import Path
 from typing import Dict, Union, List
-from gensound import Signal, Silence
+from gensound import Signal, Silence, Sine
 import dataclasses
+
+SAMPLE_SOUND = WAVWrapper(str(Path(__file__).parent / "48_C_SyncLead_SP_01.wav"))
+EMPTY_SOUND = SAMPLE_SOUND * 0
 
 
 @dataclasses.dataclass
@@ -50,24 +55,29 @@ class Track:
             list(self.audio_track.keys()), key=lambda x: self.audio_track[x].start_time
         )
 
+    def _repeat_clip(self, clip: AudioClip, timing: Timing) -> Signal:
+        clip_signal = clip.get_internal()
+        if timing.duration > clip.duration:
+            clip_signal = Signal()
+            clip_signal += EMPTY_SOUND
+            repeat_count = round(timing.duration / clip.duration, ndigits=0)
+            if timing.duration % clip.duration != 0:
+                repeat_count += 1
+            for i in range(repeat_count):
+                clip_signal[
+                    float(i * timing.duration) : float(
+                        (i * timing.duration) + timing.duration
+                    )
+                ] += clip.get_internal()
+        return clip_signal
+
     def play(self) -> Signal:
-        sorted_timings = sorted(
-            list(self.audio_track.values()), key=lambda x: x.end_time
-        )
-        signal = Silence(duration=float(sorted_timings[-1].end_time))
+        signal = Signal()
+        signal += EMPTY_SOUND
         for clip, timing in self.audio_track.items():
             clip_signal = clip.get_internal()
-            if timing.duration > clip.get_duration():
-                clip_signal = Silence(duration=float(timing.duration))
-                repeat_count = round(timing.duration / clip.get_duration(), ndigits=0)
-                if timing.duration % clip.get_duration() != 0:
-                    repeat_count += 1
-                for i in range(repeat_count):
-                    clip_signal[
-                        float(i * timing.duration) : float(
-                            (i * timing.duration) + timing.duration
-                        )
-                    ] += clip.get_internal()
+            if timing.duration > clip.duration:
+                clip_signal = self._repeat_clip(clip, timing)
             signal[float(timing.start_time) : float(timing.end_time)] += clip_signal
         return signal
 
