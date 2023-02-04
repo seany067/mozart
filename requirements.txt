@@ -1,2 +1,3 @@
 gensound==0.5.3
 numpy==1.24.1
+black==23.1.0
