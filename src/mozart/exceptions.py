@@ -1,0 +1,2 @@
+class AudioClipOverlapException(Exception):
+    pass 
