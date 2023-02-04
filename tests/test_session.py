@@ -10,7 +10,6 @@ from gensound import test_wav
 def test_session():
     track = Track()
     track.addClip(
-        # SampleClip("/home/honeyfox/Downloads/48_C_SyncLead_SP_01.wav"),
         SampleClip(test_wav),
         start_time=0.0,
         duration=0.2e3,
