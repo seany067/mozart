@@ -8,6 +8,11 @@ class AudioClip(ABC):
     def play(self):
         pass
 
+    def get_duration(self) -> float:
+        if hasattr(self.get_internal(), "duration"):
+            return self.get_internal().duration
+        raise ValueError("Signal does not store a duration")
+
     def concat(self, clip: "AudioClip") -> Signal:
         return self.get_internal() | clip.get_internal()
 
