@@ -1,6 +1,7 @@
 from .audio_clip import AudioClip
 from .exceptions import AudioClipOverlapException
-from typing import Dict, Union
+from typing import Dict, Union, List
+from gensound import Signal, Silence
 import dataclasses
 
 
@@ -44,8 +45,31 @@ class Track:
             raise AudioClipOverlapException(f"{timing} will clash with {clash_clip}")
         self.audio_track[audio_clip] = Timing(start_time, duration)
 
-    def play() -> "Track":
-        pass
+    def listClips(self) -> List[AudioClip]:
+        return sorted(
+            list(self.audio_track.keys()), key=lambda x: self.audio_track[x].start_time
+        )
 
-    def pause() -> "Track":
-        pass
+    def play(self) -> Signal:
+        sorted_timings = sorted(
+            list(self.audio_track.values()), key=lambda x: x.end_time
+        )
+        signal = Silence(duration=float(sorted_timings[-1].end_time))
+        for clip, timing in self.audio_track.items():
+            clip_signal = clip.get_internal()
+            if timing.duration > clip.get_duration():
+                clip_signal = Silence(duration=float(timing.duration))
+                repeat_count = round(timing.duration / clip.get_duration(), ndigits=0)
+                if timing.duration % clip.get_duration() != 0:
+                    repeat_count += 1
+                for i in range(repeat_count):
+                    clip_signal[
+                        float(i * timing.duration) : float(
+                            (i * timing.duration) + timing.duration
+                        )
+                    ] += clip.get_internal()
+            signal[float(timing.start_time) : float(timing.end_time)] += clip_signal
+        return signal
+
+    def pause(self) -> "Track":
+        return self
