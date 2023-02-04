@@ -79,7 +79,8 @@ class Track:
             clip_signal = clip.get_internal()
             if timing.duration > clip.duration:
                 clip_signal = self._repeat_clip(clip, timing)
-            signal = signal | (timing.end_time - cur_time)
+            if (timing.start_time > cur_time):
+                signal = signal | (timing.start_time - cur_time)
             signal = signal | clip_signal
             cur_time = timing.end_time
         return signal
