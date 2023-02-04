@@ -37,7 +37,7 @@ class BasicSynth(Instrument):
                 self.__internal = self.__internal.mixdown(sample_rate=self.sample_rate)
                 self.__internal = Raw(self.__internal)
 
-            current_timestamp += item.duration
+            current_timestamp += (item.duration + item.shift)
 
         self.__internal *= Gain(-12)
 
