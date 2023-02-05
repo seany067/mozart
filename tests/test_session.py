@@ -15,6 +15,6 @@ def test_session():
         duration=0.2e3,
     )
     session = Session()
-    session.addTrack(track)
-    sound = session.getSignal().realise(sample_rate=44100)
+    session.add_track(track)
+    sound = session.get_signal().realise(sample_rate=44100)
     assert math.isclose(sound.duration / 1000, 38.64705215419501)

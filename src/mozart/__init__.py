@@ -8,3 +8,5 @@ from .instrument import Instrument
 from .instrument.basic_synth import SineSynth
 
 from .pitch_shift import pitch_shift, time_stretch
+
+from .arpeggiator import arpeggiator

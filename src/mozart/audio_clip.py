@@ -1,11 +1,17 @@
 from abc import abstractmethod, ABC
 from gensound import Signal
+from gensound.effects import Transform
 
 
 class AudioClip(ABC):
     __internal: Signal
+
     @abstractmethod
     def play(self):
+        pass
+
+    @abstractmethod
+    def use_effects(self, effects: list[Transform] = []):
         pass
 
     @property
@@ -20,5 +26,6 @@ class AudioClip(ABC):
     def concat(self, clip: "AudioClip") -> Signal:
         return self.get_internal() | clip.get_internal()
 
+    @abstractmethod
     def get_internal(self):
-        return self.__internal
+        pass

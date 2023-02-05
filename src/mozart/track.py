@@ -3,7 +3,7 @@ from .exceptions import AudioClipOverlapException
 from .wav import WAVWrapper
 from pathlib import Path
 from typing import Dict, Union, List, Tuple
-from gensound import Signal, Silence, Sine
+from gensound import Signal, Transform, Raw
 import dataclasses
 
 SAMPLE_SOUND = WAVWrapper(str(Path(__file__).parent / "48_C_SyncLead_SP_01.wav"))
@@ -35,6 +35,7 @@ class Timing:
 class Track:
     def __init__(self):
         self.audio_track: Dict[AudioClip, List[Timing]] = {}
+        self.with_effects: list[Transform] = []
 
     def will_clash(self, timing: Timing) -> Union[Timing, None]:
         for timings in self.audio_track.values():
@@ -65,13 +66,15 @@ class Track:
     def _repeat_clip(self, clip: AudioClip, timing: Timing) -> Signal:
         clip_signal = Signal()
         clip_signal += EMPTY_SOUND
-        repeat_count = round(timing.duration / clip.duration, ndigits=0)
+        repeat_count = int(timing.duration / clip.duration)
         cur_time = 0.0
         for i in range(repeat_count):
             clip_signal = clip_signal | clip.get_internal()
             cur_time += clip.duration
         if cur_time < timing.duration:
-            clip_signal = clip_signal | clip.get_internal()[:float(timing.duration - cur_time)]
+            clip_signal = (
+                clip_signal | clip.get_internal()[: float(timing.duration - cur_time)]
+            )
         return clip_signal
 
     def get_signal(self) -> Signal:
@@ -83,15 +86,24 @@ class Track:
 
         sorted_clips: List = sorted(timing_map.items(), key=lambda x: x[0].start_time)
         cur_time = 0.0
-        for (timing, clip) in sorted_clips:
+        for timing, clip in sorted_clips:
             clip_signal = clip.get_internal()
             if timing.duration > clip.duration:
                 clip_signal = self._repeat_clip(clip, timing)
-            if (timing.start_time > cur_time):
+            if timing.start_time > cur_time:
                 signal = signal | (timing.start_time - cur_time)
             signal = signal | clip_signal[: timing.duration]
             cur_time = timing.end_time
+            signal = Raw(signal.mixdown(sample_rate=44100))
+
+        for effect in self.with_effects:
+            signal *= effect
+            signal = Raw(signal.mixdown(sample_rate=44100))
+
         return signal
+
+    def use_effects(self, effects: list[Transform] = []):
+        self.with_effects = effects
 
     def pause(self) -> "Track":
         return self
