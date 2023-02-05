@@ -64,11 +64,13 @@ class TriangleSynth(BasicSynth):
     def instrument_builder(self, note: Note):
         return Triangle(str(note), note.duration)
 
+
 class Sampler(BasicSynth):
-    def __init__(self, filename: str, note: Note):
+    def __init__(self, filename: str, initial_note: Note, midi: list[Union[Note, Chord, Pause]]):
         self.filename = filename
-        self.note = note
+        self.note = initial_note
         self.wav = WAVWrapper(filename)
+        super().__init__(midi)
     
     def instrument_builder(self, note: Note):
         g=lambda q:[0,2,3,5,7,8,10][ord(q[0])-65]+" #".find(q.ljust(2)[1])
