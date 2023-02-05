@@ -32,16 +32,16 @@ def beats_to_duration(bpm: int, beats_to_run_for: float):
     return (30e3 / float(bpm)) * beats_to_run_for
 
 
-lead_synth = SineSynth(midi=[
-    Note("B4", duration=beats_to_duration(105, 0.5)),
-    Note("D4", duration=beats_to_duration(105, 0.5)),
-    Note("G3", duration=beats_to_duration(105, 0.5)),
-    Note("B4", duration=beats_to_duration(105, 0.5)),
-    Note("D4", duration=beats_to_duration(105, 0.5)),
-    Note("C#4", duration=beats_to_duration(105, 0.5)),
-    Note("B4", duration=beats_to_duration(105, 0.5)),
-    Note("B4", duration=beats_to_duration(105, 0.5)),
-])
+# lead_synth = SineSynth(midi=[
+#     Note("B4", duration=beats_to_duration(105, 0.5)),
+#     Note("D4", duration=beats_to_duration(105, 0.5)),
+#     Note("G3", duration=beats_to_duration(105, 0.5)),
+#     Note("B4", duration=beats_to_duration(105, 0.5)),
+#     Note("D4", duration=beats_to_duration(105, 0.5)),
+#     Note("C#4", duration=beats_to_duration(105, 0.5)),
+#     Note("B4", duration=beats_to_duration(105, 0.5)),
+#     Note("B4", duration=beats_to_duration(105, 0.5)),
+# ])
 
 drum_track = Track()
 drum_track.add_clip(drum_kit, 0.00, 60e03)
@@ -53,13 +53,13 @@ keys_track = Track()
 keys_track.add_clip(keys, 0.00, 60e03)
 
 lead_track = Track()
-lead_track.add_clip(lead_synth, 0.00, 60e03)
+# lead_track.add_clip(lead_synth, 0.00, 60e03)
 
+session = Session()
+session.add_track(drum_track)
+session.add_track(vinyl_track)
+session.add_track(keys_track)
+session.add_track(lead_track)
 
 def test_song():
-    session = Session()
-    session.add_track(drum_track)
-    session.add_track(vinyl_track)
-    session.add_track(keys_track)
-    session.add_track(lead_track)
     session.get_signal().play(sample_rate=44100)
