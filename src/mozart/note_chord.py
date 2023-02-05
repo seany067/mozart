@@ -30,3 +30,4 @@ class Chord:
 class Pause:
     def __init__(self, duration: float):
         self.duration = duration
+        self.shift = 0.00

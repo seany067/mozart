@@ -41,6 +41,9 @@ class BasicSynth(Instrument):
 
         self.__internal *= Gain(-12)
 
+    def get_internal(self):
+        return self.__internal
+
 
 class SineSynth(BasicSynth):
     def instrument_builder(self, note: Note):

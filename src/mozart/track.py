@@ -57,7 +57,7 @@ class Track:
     def _repeat_clip(self, clip: AudioClip, timing: Timing) -> Signal:
         clip_signal = Signal()
         clip_signal += EMPTY_SOUND
-        repeat_count = round(timing.duration / clip.duration, ndigits=0)
+        repeat_count = int(timing.duration / clip.duration)
         cur_time = 0.0
         for i in range(repeat_count):
             clip_signal = clip_signal | clip.get_internal()

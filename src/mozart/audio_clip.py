@@ -20,5 +20,6 @@ class AudioClip(ABC):
     def concat(self, clip: "AudioClip") -> Signal:
         return self.get_internal() | clip.get_internal()
 
+    @abstractmethod
     def get_internal(self):
-        return self.__internal
+        pass

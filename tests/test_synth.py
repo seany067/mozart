@@ -68,8 +68,8 @@ def test_juno_synth():
 
 def test_shift_synth():
     C_NOTE = Note("C3", duration=2e3, shift=-1e3)
-    D_NOTE = Note("D3", duration=2e3, shift=-1.5e3)
-    E_NOTE = Note("E3", duration=2e3, shift=-1.2e3)
+    D_NOTE = Note("D3", duration=2e3, shift=-1e3)
+    E_NOTE = Note("E3", duration=2e3, shift=-1e3)
 
     synth = SawtoothSynth(midi=[
         Note("C3", duration=2e3), D_NOTE, E_NOTE, C_NOTE, D_NOTE, E_NOTE

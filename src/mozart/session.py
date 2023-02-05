@@ -9,7 +9,7 @@ class Session:
         self.audio_session: List[Track] = []
         pass
 
-    def addTrack(self, track: Track):
+    def add_track(self, track: Track):
         self.audio_session.append(track)
 
     def getSignal(self) -> "Signal":

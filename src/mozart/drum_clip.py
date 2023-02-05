@@ -1,5 +1,6 @@
 from .audio_clip import AudioClip
-from gensound import WAV, Signal, Silence, Sine, Raw, Audio
+from .wav import WAVWrapper
+from gensound import Signal, Silence, Sine, Raw, Audio
 from pathlib import Path
 
 class DrumInstruments:
@@ -36,6 +37,9 @@ class DrumClip(AudioClip):
         self.__patterns = patterns
         self.__build_internal_representation()
 
+    def get_internal(self):
+        return self.__internal
+
     def play(self):
         self.__internal.play()
 
@@ -44,7 +48,7 @@ class DrumClip(AudioClip):
         instruments = self.__instruments.get_instruments()
         patterns = self.__patterns.get_pattern()
 
-        instrument_wav_map = {instrument: WAV(file) for instrument, file in instruments.items()}
+        instrument_wav_map = {instrument: WAVWrapper(file) for instrument, file in instruments.items()}
 
         self.__internal = Signal()
         self.__internal += list(instrument_wav_map.values())[0] * 0
