@@ -54,4 +54,5 @@ def arpeggiator(
             up = not up
 
         sig |= oscillator(current, base_note.duration)
+        
     return sig
