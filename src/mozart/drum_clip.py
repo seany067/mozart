@@ -34,7 +34,12 @@ class DrumClip(AudioClip):
     __instruments: DrumInstruments
     __patterns: DrumPatterns
 
-    def __init__(self, instruments: DrumInstruments, patterns: DrumPatterns, with_effects: list[Transform] = []):
+    def __init__(
+        self,
+        instruments: DrumInstruments,
+        patterns: DrumPatterns,
+        with_effects: list[Transform] = [],
+    ):
         self.__instruments = instruments
         self.__patterns = patterns
         self.with_effects = with_effects
@@ -58,7 +63,9 @@ class DrumClip(AudioClip):
         instruments = self.__instruments.get_instruments()
         patterns = self.__patterns.get_pattern()
 
-        instrument_wav_map = {instrument: WAVWrapper(file) for instrument, file in instruments.items()}
+        instrument_wav_map = {
+            instrument: WAVWrapper(file) for instrument, file in instruments.items()
+        }
 
         self.__internal = Signal()
         self.__internal += list(instrument_wav_map.values())[0] * 0
