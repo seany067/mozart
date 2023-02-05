@@ -10,6 +10,12 @@ def pitch_shift(self: Signal, shift_by: int) -> Audio:
     return Audio(sample_rate=44100).from_array(vstack((shifted_left, shifted_right)))
 
 
+def pitch_shift_single(self: Signal, shift_by: int) -> Audio:
+    mixed_signal = self.mixdown(sample_rate=44100)
+    shifted = shift_pitch(mixed_signal.audio[0], 44100, shift_by)
+    return Audio(sample_rate=44100).from_array(shifted)
+
+
 def time_stretch(self: Signal, stretch_by: float) -> Audio:
     mixed_signal = self.mixdown(sample_rate=44100)
     shifted_left = stretch_time(mixed_signal.audio[0], stretch_by)

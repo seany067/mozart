@@ -9,6 +9,7 @@ from librosa.effects import pitch_shift
 
 from mozart.instrument.basic_synth import SquareSynth, SawtoothSynth, TriangleSynth
 from mozart.instrument.juno_synth import JunoSynth
+from mozart.instrument.bass_synth import BassSynth
 
 C_NOTE = Note("C3", duration=0.5e03)
 E_NOTE = Note("E3", duration=0.5e03)
@@ -27,7 +28,7 @@ MIDI = [
     C_CHORD,
     PAUSE,
     G_NOTE,
-    C_CHORD
+    C_CHORD,
 ]
 
 
@@ -52,17 +53,36 @@ def test_triangle_synth():
 
 
 def test_juno_synth():
-    synth = JunoSynth(midi=[
-        C_NOTE,
-        E_NOTE,
-        G_NOTE,
-        E_NOTE,
-        C_NOTE,
-        G_NOTE,
-        E_NOTE,
-        E_NOTE,
-        C_NOTE
-    ])
+    synth = JunoSynth(
+        midi=[
+            C_NOTE,
+            E_NOTE,
+            G_NOTE,
+            E_NOTE,
+            C_NOTE,
+            G_NOTE,
+            E_NOTE,
+            E_NOTE,
+            C_NOTE,
+        ]
+    )
+    synth.play()
+
+
+def test_bass_synth():
+    synth = BassSynth(
+        midi=[
+            C_NOTE,
+            E_NOTE,
+            G_NOTE,
+            E_NOTE,
+            C_NOTE,
+            G_NOTE,
+            E_NOTE,
+            E_NOTE,
+            C_NOTE,
+        ]
+    )
     synth.play()
 
 
@@ -71,7 +91,14 @@ def test_shift_synth():
     D_NOTE = Note("D3", duration=2e3, shift=-1e3)
     E_NOTE = Note("E3", duration=2e3, shift=-1e3)
 
-    synth = SawtoothSynth(midi=[
-        Note("C3", duration=2e3), D_NOTE, E_NOTE, C_NOTE, D_NOTE, E_NOTE
-    ])
+    synth = SawtoothSynth(
+        midi=[
+            Note("C3", duration=2e3),
+            D_NOTE,
+            E_NOTE,
+            C_NOTE,
+            D_NOTE,
+            E_NOTE,
+        ]
+    )
     synth.play()

@@ -40,4 +40,4 @@ def test_play(track: Track, sample_audio: AudioClip) -> None:
     track.add_clip(sample_audio, 0, 2)
     track.add_clip(sample_audio, 2, 2)
     track.add_clip(sample_audio, 4, 2)
-    track.getSignal().play()
+    track.get_signal().play()

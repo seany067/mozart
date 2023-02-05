@@ -2,7 +2,7 @@ from .audio_clip import AudioClip
 from .exceptions import AudioClipOverlapException
 from .wav import WAVWrapper
 from pathlib import Path
-from typing import Dict, Union, List
+from typing import Dict, Union, List, Tuple
 from gensound import Signal, Silence, Sine
 import dataclasses
 
@@ -54,6 +54,14 @@ class Track:
         else:
             self.audio_track[audio_clip] = [Timing(start_time, duration)]
 
+    def list_clips(self) -> List[Tuple[Timing, AudioClip]]:
+        timing_map: Dict[Timing, AudioClip] = {}
+        for clip, timings in self.audio_track.items():
+            for timing in timings:
+                timing_map[timing] = clip
+        sorted_clips = sorted(timing_map.items(), key=lambda x: x[0].start_time)
+        return sorted_clips
+
     def _repeat_clip(self, clip: AudioClip, timing: Timing) -> Signal:
         clip_signal = Signal()
         clip_signal += EMPTY_SOUND
@@ -66,7 +74,7 @@ class Track:
             clip_signal = clip_signal | clip.get_internal()[:float(timing.duration - cur_time)]
         return clip_signal
 
-    def getSignal(self) -> Signal:
+    def get_signal(self) -> Signal:
         signal = Signal() | EMPTY_SOUND
         timing_map: Dict[Timing, AudioClip] = {}
         for clip, timings in self.audio_track.items():
