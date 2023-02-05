@@ -3,6 +3,7 @@ from librosa.effects import pitch_shift as shift_pitch, time_stretch as stretch_
 from numpy import vstack
 
 
+
 def pitch_shift(self: Signal, shift_by: int) -> Audio:
     mixed_signal = self.mixdown(sample_rate=44100)
     shifted_left = shift_pitch(mixed_signal.audio[0], 44100, shift_by)
@@ -15,7 +16,8 @@ class PitchShift(Transform):
         self.shift_by = shift_by
 
     def realise(self, audio):
-        return Raw(pitch_shift(audio, self.shift_by))
+        shifter = Raw(pitch_shift(Raw(audio), self.shift_by))
+        audio.audio[:, :] = shifter.audio[:, :]
 
 
 def pitch_shift_single(self: Signal, shift_by: int) -> Audio:
@@ -29,7 +31,8 @@ class PitchShiftSingle(Transform):
         self.shift_by = shift_by
 
     def realise(self, audio):
-        return Raw(pitch_shift_single(audio, self.shift_by))
+        shifter = Raw(pitch_shift_single(Raw(audio), self.shift_by))
+        audio.audio[:, :] = shifter.audio[:, :]
 
 
 def time_stretch(self: Signal, stretch_by: float) -> Audio:
@@ -44,4 +47,5 @@ class TimeStretch(Transform):
         self.shift_by = shift_by
 
     def realise(self, audio):
-        return Raw(time_stretch(audio, self.shift_by))
+        shifter = Raw(time_stretch(Raw(audio), self.shift_by))
+        audio.audio[:, :] = shifter.audio[:, :]
