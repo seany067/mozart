@@ -40,7 +40,7 @@ class DrumClip(AudioClip):
         self.with_effects = with_effects
         self.__build_internal_representation()
 
-    def with_effects(self, effects: list[Transform] = []):
+    def use_effects(self, effects: list[Transform] = []):
         return self.__init__(self.__instruments, self.__patterns, effects)
 
     def get_internal(self):

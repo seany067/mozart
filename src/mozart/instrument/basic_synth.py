@@ -20,7 +20,7 @@ class BasicSynth(Instrument):
     def instrument_builder(self, note: Note):
         pass
 
-    def with_effects(self, effects: list[Transform] = []):
+    def use_effects(self, effects: list[Transform] = []):
         return self.__init__(self.midi, self.sample_rate, effects)
 
     def play(self):
