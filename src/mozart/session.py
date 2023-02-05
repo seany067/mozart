@@ -14,7 +14,7 @@ class Session:
 
     def getSignal(self) -> "Signal":
         return Signal.mix(
-            [track.getSignal() for track in self.audio_session]
+            [track.get_signal() for track in self.audio_session]
         )  # type: ignore
 
     def play(self):

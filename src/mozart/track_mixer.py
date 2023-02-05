@@ -24,6 +24,6 @@ class TrackMixer:
     def play(self) -> Signal:
         signal = Signal()
         for track in self._tracks:
-            signal += track.getSignal()
+            signal += track.get_signal()
             signal = Raw(signal.mixdown(sample_rate=44100))
         signal.play()

@@ -24,4 +24,4 @@ track.add_clip(
     duration=0.5e3,
 )
 
-track.getSignal().play()
+track.get_signal().play()
