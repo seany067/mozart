@@ -31,6 +31,9 @@ class BasicSynth(Instrument):
     def play(self):
         self.get_internal().play()
 
+    def export(self):
+        self.get_internal().export("output.wav")
+
     def __build_internal_representation(self):
         self.__internal = EMPTY_SOUND
         current_timestamp = 0.00
