@@ -62,4 +62,4 @@ def test_song():
     session.add_track(vinyl_track)
     session.add_track(keys_track)
     session.add_track(lead_track)
-    session.getSignal().play(sample_rate=44100)
+    session.get_signal().play(sample_rate=44100)

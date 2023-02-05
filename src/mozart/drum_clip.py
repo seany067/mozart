@@ -1,7 +1,9 @@
 from .audio_clip import AudioClip
 from .wav import WAVWrapper
-from gensound import Signal, Silence, Sine, Raw, Audio
+from gensound import Signal, Raw
+from gensound.effects import Transform
 from pathlib import Path
+
 
 class DrumInstruments:
     __instruments: dict[str, str]
@@ -32,16 +34,24 @@ class DrumClip(AudioClip):
     __instruments: DrumInstruments
     __patterns: DrumPatterns
 
-    def __init__(self, instruments: DrumInstruments, patterns: DrumPatterns):
+    def __init__(self, instruments: DrumInstruments, patterns: DrumPatterns, with_effects: list[Transform] = []):
         self.__instruments = instruments
         self.__patterns = patterns
+        self.with_effects = with_effects
         self.__build_internal_representation()
 
+    def with_effects(self, effects: list[Transform] = []):
+        return self.__init__(self.__instruments, self.__patterns, effects)
+
     def get_internal(self):
-        return self.__internal
+        transformed_internal = self.__internal
+        for effect in self.with_effects:
+            transformed_internal *= effect
+
+        return transformed_internal
 
     def play(self):
-        self.__internal.play()
+        self.get_internal().play()
 
     def __build_internal_representation(self):
         beat_length = 30e3 / float(self.__patterns.get_tempo())
