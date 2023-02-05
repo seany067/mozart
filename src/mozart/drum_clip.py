@@ -34,20 +34,24 @@ class DrumClip(AudioClip):
     __instruments: DrumInstruments
     __patterns: DrumPatterns
 
-    def __init__(self, instruments: DrumInstruments, patterns: DrumPatterns):
+    def __init__(self, instruments: DrumInstruments, patterns: DrumPatterns, with_effects: list[Transform] = []):
         self.__instruments = instruments
         self.__patterns = patterns
+        self.with_effects = with_effects
         self.__build_internal_representation()
 
-    def get_internal(self, with_effects: list[Transform] = []):
+    def with_effects(self, effects: list[Transform] = []):
+        return self.__init__(self.__instruments, self.__patterns, effects)
+
+    def get_internal(self):
         transformed_internal = self.__internal
-        for effect in with_effects:
+        for effect in self.with_effects:
             transformed_internal *= effect
 
         return transformed_internal
 
-    def play(self, with_effects: list[Transform] = []):
-        self.get_internal(with_effects).play()
+    def play(self):
+        self.get_internal().play()
 
     def __build_internal_representation(self):
         beat_length = 30e3 / float(self.__patterns.get_tempo())

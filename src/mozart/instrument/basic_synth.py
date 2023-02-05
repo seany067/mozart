@@ -12,16 +12,19 @@ from ..pitch_shift import pitch_shift
 
 
 class BasicSynth(Instrument):
-    def __init__(self, midi: list[Union[Note, Chord, Pause]], sample_rate: int = 44100):
-        super().__init__(midi, sample_rate)
+    def __init__(self, midi: list[Union[Note, Chord, Pause]], sample_rate: int = 44100,  with_effects: list[Transform] = []):
+        super().__init__(midi, sample_rate, with_effects)
         self.__build_internal_representation()
 
     @abstractmethod
     def instrument_builder(self, note: Note):
         pass
 
-    def play(self, with_effects: list[Transform] = []):
-        self.get_internal(with_effects).play()
+    def with_effects(self, effects: list[Transform] = []):
+        return self.__init__(self.midi, self.sample_rate, effects)
+
+    def play(self):
+        self.get_internal().play()
 
     def __build_internal_representation(self):
         self.__internal = EMPTY_SOUND
@@ -44,9 +47,9 @@ class BasicSynth(Instrument):
 
         self.__internal *= Gain(-12)
 
-    def get_internal(self, with_effects: list[Transform] = []):
+    def get_internal(self):
         transformed_internal = self.__internal
-        for effect in with_effects:
+        for effect in self.with_effects:
             transformed_internal *= effect
 
         return transformed_internal

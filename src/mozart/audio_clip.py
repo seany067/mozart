@@ -8,6 +8,10 @@ class AudioClip(ABC):
     def play(self):
         pass
 
+    @abstractmethod
+    def with_effects(self, effects: list[Transform] = []):
+        pass
+
     @property
     def duration(self) -> float:
         internal = self.get_internal()
@@ -21,5 +25,5 @@ class AudioClip(ABC):
         return self.get_internal() | clip.get_internal()
 
     @abstractmethod
-    def get_internal(self, with_effects: list[Transform] = []):
+    def get_internal(self):
         pass
