@@ -1,10 +1,12 @@
 from abc import abstractmethod
 
-from gensound import Gain, Sine, Triangle, Sawtooth, Square, Silence, Raw, Shift
+from gensound import Gain, Sine, Triangle, Sawtooth, Square, Silence, Raw, Signal, Audio
+from gensound.effects import Transform
 from typing import Union
 
 from . import Instrument
 from .. import Note, Chord, Pause
+from ..track import EMPTY_SOUND
 from ..wav import WAVWrapper
 from ..pitch_shift import pitch_shift
 
@@ -18,11 +20,11 @@ class BasicSynth(Instrument):
     def instrument_builder(self, note: Note):
         pass
 
-    def play(self):
-        self.__internal.play(sample_rate=self.sample_rate)
+    def play(self, with_effects: list[Transform] = []):
+        self.get_internal(with_effects).play()
 
     def __build_internal_representation(self):
-        self.__internal = Silence() * 0
+        self.__internal = EMPTY_SOUND
         current_timestamp = 0.00
 
         for item in self.midi:
@@ -32,6 +34,7 @@ class BasicSynth(Instrument):
                 chord = self.instrument_builder(item.root_note)
                 for note in item.notes[1:]:
                     chord += self.instrument_builder(note)
+                    chord = Raw(chord.mixdown(sample_rate=self.sample_rate))
 
                 self.__internal[current_timestamp + item.shift:] += chord
                 self.__internal = self.__internal.mixdown(sample_rate=self.sample_rate)
@@ -41,8 +44,12 @@ class BasicSynth(Instrument):
 
         self.__internal *= Gain(-12)
 
-    def get_internal(self):
-        return self.__internal
+    def get_internal(self, with_effects: list[Transform] = []):
+        transformed_internal = self.__internal
+        for effect in with_effects:
+            transformed_internal *= effect
+
+        return transformed_internal
 
 
 class SineSynth(BasicSynth):
@@ -70,9 +77,13 @@ class Sampler(BasicSynth):
         self.filename = filename
         self.note = initial_note
         self.wav = WAVWrapper(filename)
+        self.pitch_map = {}
         super().__init__(midi)
     
     def instrument_builder(self, note: Note):
+        if str(note) in self.pitch_map:
+            return self.pitch_map[str(note)]
+
         g=lambda q:[0,2,3,5,7,8,10][ord(q[0])-65]+" #".find(q.ljust(2)[1])
         f=lambda a,b:(g(b)+~g(a))%12+2
         original_note = str(self.note)
@@ -91,4 +102,8 @@ class Sampler(BasicSynth):
         print(str(original_octave), str(new_octave))
         
         difference = f(str(original_note), str(new_note)) + ((new_octave - original_octave) * 12)
-        return pitch_shift(self.wav, difference)
+        raw_pitched_audio = Raw(pitch_shift(self.wav, difference))
+
+        self.pitch_map[str(note)] = raw_pitched_audio
+
+        return raw_pitched_audio

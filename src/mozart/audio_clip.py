@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from gensound import Signal
-
+from gensound.effects import Transform
 
 class AudioClip(ABC):
     __internal: Signal
@@ -21,5 +21,5 @@ class AudioClip(ABC):
         return self.get_internal() | clip.get_internal()
 
     @abstractmethod
-    def get_internal(self):
+    def get_internal(self, with_effects: list[Transform] = []):
         pass

@@ -12,10 +12,10 @@ class Session:
     def add_track(self, track: Track):
         self.audio_session.append(track)
 
-    def getSignal(self) -> "Signal":
+    def get_signal(self) -> "Signal":
         return Signal.mix(
             [track.get_signal() for track in self.audio_session]
         )  # type: ignore
 
     def play(self):
-        self.getSignal().play()  # type: ignore
+        self.get_signal().play()  # type: ignore

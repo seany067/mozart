@@ -3,11 +3,12 @@ from typing import Union
 
 from ..note_chord import Note, Chord, Pause
 from ..audio_clip import AudioClip
+from gensound.effects import Transform
 
 
 class Instrument(AudioClip):
     @abstractmethod
-    def get_internal(self):
+    def get_internal(self, with_effects: list[Transform] = []):
         pass
 
     def __init__(self, midi: list[Union[Note, Chord, Pause]],
