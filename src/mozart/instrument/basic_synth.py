@@ -43,9 +43,6 @@ class BasicSynth(Instrument):
                 self.__internal[
                     current_timestamp + item.shift :
                 ] += self.instrument_builder(item)[: item.duration]
-                self.__internal = Raw(
-                    self.__internal.mixdown(sample_rate=self.sample_rate)
-                )
             elif isinstance(item, Chord):
                 chord = self.instrument_builder(item.root_note)
                 for note in item.notes[1:]:
@@ -53,8 +50,7 @@ class BasicSynth(Instrument):
                     chord = Raw(chord.mixdown(sample_rate=self.sample_rate))
 
                 self.__internal[current_timestamp + item.shift :] += chord
-                self.__internal = self.__internal.mixdown(sample_rate=self.sample_rate)
-                self.__internal = Raw(self.__internal)
+            self.__internal = Raw(self.__internal.mixdown(sample_rate=self.sample_rate))
 
             current_timestamp += item.duration + item.shift
 
@@ -64,6 +60,9 @@ class BasicSynth(Instrument):
         transformed_internal = self.__internal
         for effect in self.with_effects:
             transformed_internal *= effect
+            transformed_internal = Raw(
+                transformed_internal.mixdown(sample_rate=self.sample_rate)
+            )
 
         return transformed_internal
 

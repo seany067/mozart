@@ -23,7 +23,6 @@ class SampleClip(AudioClip):
     def get_internal(self):
         transformed_internal = self.__internal
         for effect in self.with_effects:
-            print("Applying effect", effect)
             transformed_internal *= effect
 
         return transformed_internal
